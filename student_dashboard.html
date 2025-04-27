@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 80px;
+        }
+        .dashboard-container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .welcome-header {
+            background: linear-gradient(to right, #2b4eff, #1e3acc);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .courses-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+        }
+        .courses-table th, .courses-table td {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+        }
+        .courses-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .courses-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .courses-table th:first-child {
+            border-top-left-radius: 10px;
+        }
+        .courses-table th:last-child {
+            border-top-right-radius: 10px;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            float: right;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container position-relative d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('index') }}" class="logo d-flex align-items-center me-auto me-xl-0">
+                <h1 class="sitename">Light Global School</h1>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="welcome-header">
+            <h2>Welcome, {{ current_user.Name }}!</h2>
+            <p>Student Dashboard</p>
+        </div>
+
+        <h3>Your Courses and Teachers</h3>
+        {% if courses_with_teachers %}
+        <table class="courses-table">
+            <tr>
+                <th>Course Name</th>
+                <th>Teacher Name</th>
+                <th>Subject</th>
+            </tr>
+            {% for course, teacher in courses_with_teachers %}
+            <tr>
+                <td>{{ course.CourseName }}</td>
+                <td>{{ teacher.Name }}</td>
+                <td>{{ teacher.Subject }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="alert alert-info">
+            You are not enrolled in any courses yet.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+</html>

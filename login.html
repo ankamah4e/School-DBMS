@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Light Global School</title>
+
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+
+    <style>
+        .login-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url("{{ url_for('static', filename='assets/img/picc.jpg') }}") center/cover no-repeat;
+            padding: 60px 0;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+        .login-container h2 {
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #2b4eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            background: #1e3acc;
+            transform: translateY(-2px);
+        }
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container position-relative d-flex align-items-center justify-content-between">
+            <a href="{{ url_for('index') }}" class="logo d-flex align-items-center me-auto me-xl-0">
+                <h1 class="sitename">Light Global School</h1>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('index') }}#about">About Us</a></li>
+                    <li><a href="{{ url_for('login') }}" class="active">Login</a></li>
+                    <li><a href="{{ url_for('add_student') }}">Join Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="login-container">
+            <h2>Login</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+                <div class="mb-3">
+                    <label for="email" class="form-label" id="emailLabel">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required pattern=".*">
+                    <div class="form-text" id="emailHint"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="form-text">For admin login use default password: password</div>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role" required onchange="updateInputField()">
+                        <option value="admin">Admin</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        function updateInputField() {
+            var role = document.getElementById('role').value;
+            var emailInput = document.getElementById('email');
+            var emailLabel = document.getElementById('emailLabel');
+            var emailHint = document.getElementById('emailHint');
+            
+            if (role === 'teacher') {
+                emailInput.type = 'number';
+                emailInput.placeholder = 'Enter your Teacher ID';
+                emailLabel.textContent = 'Teacher ID';
+                emailHint.textContent = 'Enter your numeric Teacher ID';
+                emailInput.pattern = '[0-9]*';  // Allow only numbers
+                emailInput.removeAttribute('type');  // Remove type to prevent email validation
+                emailInput.setAttribute('type', 'number');  // Set type after removing it
+            } else {
+                emailInput.removeAttribute('pattern');  // Remove pattern attribute
+                emailInput.removeAttribute('type');  // Remove type first
+                emailInput.setAttribute('type', 'email');  // Set email type
+                emailInput.placeholder = 'Enter your email';
+                emailLabel.textContent = 'Email address';
+                emailHint.textContent = role === 'admin' ? 'Default admin email: admin@school.com' : '';
+            }
+        }
+
+        // Call updateInputField on page load to set initial state
+        document.addEventListener('DOMContentLoaded', updateInputField);
+    </script>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+
+    <!-- Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+</html>
